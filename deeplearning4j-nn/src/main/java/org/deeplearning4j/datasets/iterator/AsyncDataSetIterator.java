@@ -399,7 +399,6 @@ public class AsyncDataSetIterator implements DataSetIterator {
             try {
                 if (useWorkspace) {
                     workspace = Nd4j.getWorkspaceManager().getWorkspaceForCurrentThread(configuration, workspaceId);
-                    workspace.enableDebug(true);
                 }
 
                 while (iterator.hasNext() && shouldWork.get()) {
