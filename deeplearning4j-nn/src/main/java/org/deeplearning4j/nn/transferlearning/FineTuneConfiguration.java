@@ -222,6 +222,8 @@ public class FineTuneConfiguration {
             nnc.setMinimize(minimize);
         if (learningRatePolicy != null)
             nnc.setLearningRatePolicy(learningRatePolicy);
+        if (lrPolicyDecayRate != null)
+            nnc.setLrPolicyDecayRate(lrPolicyDecayRate);
         if (lrPolicySteps != null)
             nnc.setLrPolicySteps(lrPolicySteps);
         if (lrPolicyPower != null)
@@ -394,6 +396,8 @@ public class FineTuneConfiguration {
             confBuilder.setGradientNormalizationThreshold(gradientNormalizationThreshold);
         if (learningRatePolicy != null)
             confBuilder.setLearningRatePolicy(learningRatePolicy);
+        if (lrPolicyDecayRate != null)
+            confBuilder.setLrPolicyDecayRate(lrPolicyDecayRate);
         if (lrPolicySteps != null)
             confBuilder.setLrPolicySteps(lrPolicySteps);
         if (lrPolicyPower != null)

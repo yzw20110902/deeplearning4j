@@ -18,7 +18,6 @@
 
 package org.deeplearning4j.nn.layers;
 
-import org.nd4j.linalg.primitives.Pair;
 import org.deeplearning4j.eval.Evaluation;
 import org.deeplearning4j.nn.api.MaskState;
 import org.deeplearning4j.nn.api.Updater;
@@ -33,6 +32,7 @@ import org.nd4j.linalg.dataset.api.DataSet;
 import org.nd4j.linalg.dataset.api.iterator.DataSetIterator;
 import org.nd4j.linalg.factory.Nd4j;
 import org.nd4j.linalg.lossfunctions.ILossFunction;
+import org.nd4j.linalg.primitives.Pair;
 import org.nd4j.linalg.util.FeatureUtil;
 
 import java.io.Serializable;
@@ -423,7 +423,23 @@ public abstract class BaseOutputLayer<LayerConfT extends org.deeplearning4j.nn.c
 
     protected INDArray getLabels2d() {
         if (labels.rank() > 2) {
-            return labels.reshape(labels.size(2), labels.size(1));
+            //return labels.reshape(labels.size(2), labels.size(1));
+            if (labels.rank() == 3) {
+                try {
+                    throw new IllegalAccessException("Use RnnOutputLayer for training with timeseries");
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+            }
+            else {
+                //this should not get triggered; RnnOuput layer handles the special case with override
+                //other implementations should be forced to do the same?
+                try {
+                    throw new IllegalAccessException("Rank greater than 2 should be handled explicitly");
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+            }
         }
         return labels;
     }
