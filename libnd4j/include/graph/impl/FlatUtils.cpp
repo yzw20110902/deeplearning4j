@@ -20,12 +20,36 @@ namespace nd4j {
 
         template<typename T>
         NDArray<T> *FlatUtils::fromFlatArray(const nd4j::graph::FlatArray *flatArray) {
-            auto newShape = new Nd4jLong[shape::shapeInfoLength((Nd4jLong *)flatArray->shape()->data())];
-            memcpy(newShape, flatArray->shape()->data(), shape::shapeInfoByteLength((Nd4jLong *)flatArray->shape()->data()));
+            nd4j_printf("      Copy step: %i\n", 0);
+            auto rank = static_cast<int>(flatArray->shape()->size());
+
+            nd4j_printf("      Copy step: %i; rank: %i\n", 1, rank);
+
+            auto length = shape::shapeInfoByteLength(rank);
+
+            nd4j_printf("      Copy step: %i; length: %i\n", 2, static_cast<int>(length));
+
+            auto newShape = new Nd4jLong[shape::shapeInfoLength(rank)];
+
+            nd4j_printf("      Copy step: %i\n", 3);
+
+
+            memcpy(newShape, flatArray->shape()->data(), length);
+
+            nd4j_printf("      Copy step: %i\n", 4);
 
             auto newBuffer = new T[shape::length(newShape)];
+
+            nd4j_printf("      Copy step: %i\n", 5);
+
             DataTypeConversions<T>::convertType(newBuffer, (void *) flatArray->buffer()->data(), DataTypeUtils::fromFlatDataType(flatArray->dtype()), ByteOrderUtils::fromFlatByteOrder(flatArray->byteOrder()),  shape::length(newShape));
+
+            nd4j_printf("      Copy step: %i\n", 6);
+
             auto array = new NDArray<T>(newBuffer, newShape);
+
+            nd4j_printf("      Copy step: %i\n", 7);
+
             array->triggerAllocationFlag(true, true);
 
             return array;
