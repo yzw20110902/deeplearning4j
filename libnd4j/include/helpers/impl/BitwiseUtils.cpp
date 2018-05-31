@@ -60,7 +60,33 @@ namespace nd4j {
         return bits;
     }
 
+    template <typename T>
+    T BitwiseUtils::swap_bytes(T v) {
+        static_assert (CHAR_BIT == 8, "CHAR_BIT != 8");
+
+        union S {
+            T v;
+            unsigned char u8[sizeof(T)];
+            S(T val) {
+                v = val;
+            }
+        };
+
+        S source(v);
+        S dest(v);
+
+        for (size_t k = 0; k < sizeof(T); k++)
+            dest.u8[k] = source.u8[sizeof(T) - k - 1];
+
+        return dest.v;
+    }
+
     nd4j::ByteOrder BitwiseUtils::asByteOrder() {
         return isBE() ? ByteOrder::BE : ByteOrder::LE;
     }
+
+    template float BitwiseUtils::swap_bytes<float>(float v);
+    template float16 BitwiseUtils::swap_bytes<float16>(float16 v);
+    template double BitwiseUtils::swap_bytes<double>(double v);
+    template Nd4jLong BitwiseUtils::swap_bytes<Nd4jLong>(Nd4jLong v);
 }

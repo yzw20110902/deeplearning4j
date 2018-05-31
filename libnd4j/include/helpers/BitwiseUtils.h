@@ -48,25 +48,7 @@ namespace nd4j {
          * @return
          */
         template <typename T>
-        static FORCEINLINE T swap_bytes(T v) {
-            static_assert (CHAR_BIT == 8, "CHAR_BIT != 8");
-
-            union S {
-                T v;
-                unsigned char u8[sizeof(T)];
-                S(T val) {
-                    v = val;
-                }
-            };
-
-            S source(v);
-            S dest(v);
-
-            for (size_t k = 0; k < sizeof(T); k++)
-                dest.u8[k] = source.u8[sizeof(T) - k - 1];
-
-            return dest.v;
-        }
+        static T swap_bytes(T v);
 
         /**
          * This method flips bits in given value
