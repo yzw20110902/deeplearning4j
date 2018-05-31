@@ -43,7 +43,7 @@ namespace nd4j {
 
             auto newBuffer = new T[bLength];
 
-            nd4j_printf("      Copy step: %i; bLength: %lld\n", 5, bLength);
+            nd4j_printf("      Copy step: %i; bLength: %lld; FBsize: %i;\n", 5, bLength, flatArray->buffer()->size());
 
             DataTypeConversions<T>::convertType(newBuffer, (void *) flatArray->buffer()->data(), DataTypeUtils::fromFlatDataType(flatArray->dtype()), ByteOrderUtils::fromFlatByteOrder(flatArray->byteOrder()),  bLength);
 
