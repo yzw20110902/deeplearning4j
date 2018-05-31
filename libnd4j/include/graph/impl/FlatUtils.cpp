@@ -23,6 +23,8 @@ namespace nd4j {
             nd4j_printf("      Copy step: %i\n", 0);
             auto rank = static_cast<int>(flatArray->shape()->Get(0));
 
+            assert(flatArray->shape()->size() == shape::shapeInfoLength(rank));
+
             nd4j_printf("      Copy step: %i; rank: %i\n", 1, rank);
 
             auto length = shape::shapeInfoByteLength(rank);
@@ -33,16 +35,17 @@ namespace nd4j {
 
             nd4j_printf("      Copy step: %i\n", 3);
 
-
             memcpy(newShape, flatArray->shape()->data(), length);
 
             nd4j_printf("      Copy step: %i\n", 4);
 
-            auto newBuffer = new T[shape::length(newShape)];
+            auto bLength = shape::length(newShape);
 
-            nd4j_printf("      Copy step: %i\n", 5);
+            auto newBuffer = new T[bLength];
 
-            DataTypeConversions<T>::convertType(newBuffer, (void *) flatArray->buffer()->data(), DataTypeUtils::fromFlatDataType(flatArray->dtype()), ByteOrderUtils::fromFlatByteOrder(flatArray->byteOrder()),  shape::length(newShape));
+            nd4j_printf("      Copy step: bLength: %lld%i\n", 5, bLength);
+
+            DataTypeConversions<T>::convertType(newBuffer, (void *) flatArray->buffer()->data(), DataTypeUtils::fromFlatDataType(flatArray->dtype()), ByteOrderUtils::fromFlatByteOrder(flatArray->byteOrder()),  bLength);
 
             nd4j_printf("      Copy step: %i\n", 6);
 

@@ -24,28 +24,29 @@ namespace nd4j {
 
             switch (dataType) {
                 case DataType_FLOAT: {
-                        auto tmp = (float *) src;
+                        auto tmp = reinterpret_cast<float *>(src);
 
                         //#pragma omp parallel for simd schedule(guided)
                         for (Nd4jLong e = 0; e < length; e++) {
-                            buffer[e] = canKeep ? (T) tmp[e] : BitwiseUtils::swap_bytes<T>((T) tmp[e]);
+                            buffer[e] = canKeep ? static_cast<T>(tmp[e]) : BitwiseUtils::swap_bytes<T>(static_cast<T>(tmp[e]));
                         }
                     }
                     break;
                 case DataType_DOUBLE: {
-                        auto tmp = (double *) src;
+                        nd4j_printf("Going double way: %lld\n", length)
+                        auto tmp = reinterpret_cast<double *>(src);
 
                         //#pragma omp parallel for simd schedule(guided)
                         for (Nd4jLong e = 0; e < length; e++)
-                            buffer[e] = canKeep ? (T) tmp[e] : BitwiseUtils::swap_bytes<T>((T) tmp[e]);
+                            buffer[e] = canKeep ? static_cast<T>(tmp[e]) : BitwiseUtils::swap_bytes<T>(static_cast<T>(tmp[e]));
                     }
                     break;
                 case DataType_HALF: {
-                        auto tmp = (float16 *) src;
+                        auto tmp = reinterpret_cast<float16 *>(src);
 
                         //#pragma omp parallel for simd schedule(guided)
                         for (Nd4jLong e = 0; e < length; e++)
-                            buffer[e] = canKeep ? (T) tmp[e] : BitwiseUtils::swap_bytes<T>((T) tmp[e]);
+                            buffer[e] = canKeep ? static_cast<T>(tmp[e]) : BitwiseUtils::swap_bytes<T>(static_cast<T>(tmp[e]));
                     }
                     break;
                 default: {
