@@ -197,9 +197,15 @@ namespace nd4j {
             T *buffer = nullptr;
 
             if (flatVariable->ndarray() != nullptr) {
-                nd4j_printf("       point A%i\n", 2);
+                 nd4j_printf("       point A%i\n", 2);
                  auto ar = flatVariable->ndarray();
+
+                 nd4j_printf("       point A%i\n", 21);
+
                 _ndarray = nd4j::graph::FlatUtils::fromFlatArray<T>(ar);
+
+                nd4j_printf("       point A%i\n", 22);
+
                 _ndarray->triggerAllocationFlag(true, true);
 
                 nd4j_printf("       point A%i\n", 3);
