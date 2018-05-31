@@ -37,8 +37,10 @@ namespace nd4j {
                         auto tmp = reinterpret_cast<double *>(src);
 
                         //#pragma omp parallel for simd schedule(guided)
-                        for (Nd4jLong e = 0; e < length; e++)
-                            buffer[e] = canKeep ? static_cast<T>(tmp[e]) : BitwiseUtils::swap_bytes<T>(static_cast<T>(tmp[e]));
+                        for (Nd4jLong e = 0; e < length; e++) {
+                            nd4j_printf("Trying tmp[%i]\n", (int) e);
+                            buffer[e] = static_cast<T>(tmp[e]);//canKeep ? static_cast<T>(tmp[e]) : BitwiseUtils::swap_bytes<T>(static_cast<T>(tmp[e]));
+                        }
                     }
                     break;
                 case DataType_HALF: {
