@@ -38,10 +38,11 @@ namespace nd4j {
 
                         //#pragma omp parallel for simd schedule(guided)
                         for (Nd4jLong e = 0; e < length; e++) {
-                            if (canKeep)
+                            if (canKeep) {
                                 buffer[e] = static_cast<T>(tmp[e]);
-                            else
+                            } else {
                                 buffer[e] = BitwiseUtils::swap_bytes<T>(static_cast<T>(tmp[e]));
+                            }
                         }
                     }
                     break;
