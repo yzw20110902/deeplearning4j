@@ -86,56 +86,30 @@ TEST_F(VariableTests, Test_FlatVariableDataType_2) {
     NDArray<double> original('c', {5, 10});
     NDArrayFactory<double>::linspace(1, original);
 
-    nd4j_printf("point %i\n", 0);
-
     auto vec = original.asByteVector();
-
-    nd4j_printf("point %i\n", 1);
 
     auto fShape = builder.CreateVector(original.getShapeInfoAsFlatVector());
     auto fBuffer = builder.CreateVector(vec);
     auto fVid = CreateIntPair(builder, 1, 12);
 
-    nd4j_printf("point %i\n", 2);
-
     auto fArray = CreateFlatArray(builder, fShape, fBuffer, nd4j::graph::DataType::DataType_DOUBLE);
 
-    nd4j_printf("point %i\n", 3);
-
     auto flatVar = CreateFlatVariable(builder, fVid, 0, 0, fArray);
-
-    nd4j_printf("point %i\n", 4);
 
     builder.Finish(flatVar);
 
     auto ptr = builder.GetBufferPointer();
 
-    nd4j_printf("point %i\n", 5);
-
     auto restoredVar = GetFlatVariable(ptr);
-
-    nd4j_printf("point %i\n", 6);
 
     auto rv = new Variable<double>(restoredVar);
 
-    nd4j_printf("point %i\n", 7);
-
     ASSERT_EQ(1, rv->id());
-
-    nd4j_printf("point %i\n", 8);
-
     ASSERT_EQ(12, rv->index());
-
-    nd4j_printf("point %i\n", 9);
 
     auto restoredArray = rv->getNDArray();
 
-    nd4j_printf("point %i\n", 10);
-
     ASSERT_TRUE(original.isSameShape(restoredArray));
-
-    nd4j_printf("point %i\n", 11);
-
     ASSERT_TRUE(original.equalsTo(restoredArray));
 
     delete rv;
