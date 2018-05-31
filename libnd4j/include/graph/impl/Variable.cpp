@@ -181,9 +181,12 @@ namespace nd4j {
 
         template <typename T>
         nd4j::graph::Variable<T>::Variable(const nd4j::graph::FlatVariable *flatVariable) {
+            nd4j_printf("       point A%i\n", 0);
             auto vid = flatVariable->id();
             this->_id = vid->first();
             this->_index = vid->second();
+
+            nd4j_printf("       point A%i\n", 1);
 
             if (flatVariable->name() != nullptr && flatVariable->name()->size() != 0)
                 this->_name = flatVariable->name()->str();
@@ -194,17 +197,23 @@ namespace nd4j {
             T *buffer = nullptr;
 
             if (flatVariable->ndarray() != nullptr) {
+                nd4j_printf("       point A%i\n", 2);
                  auto ar = flatVariable->ndarray();
                 _ndarray = nd4j::graph::FlatUtils::fromFlatArray<T>(ar);
                 _ndarray->triggerAllocationFlag(true, true);
+
+                nd4j_printf("       point A%i\n", 3);
             } else if (flatVariable->shape() != nullptr) {
                 int shapeLen = flatVariable->shape()->Length();
                 //int *shape = new int[shapeLen];
+                nd4j_printf("       point A%i\n", 4);
 
                 std::vector<Nd4jLong> shapeInfo(flatVariable->shape()->size());
                 for (int i = 0; i < flatVariable->shape()->size(); i++) {
                     shapeInfo[i] = flatVariable->shape()->Get(i);
                 }
+
+                nd4j_printf("       point A%i\n", 5);
 
                 // we just create empty array here
                 std::vector<Nd4jLong> shape(shapeInfo.at(0));
@@ -212,11 +221,17 @@ namespace nd4j {
                     shape[i] = shapeInfo.at(i + 1);
                 }
 
+                nd4j_printf("       point A%i\n", 6);
+
                 _ndarray = new NDArray<T>((char) shapeInfo.at(shapeInfo.size() - 1), shape);
+
+                nd4j_printf("       point A%i\n", 7);
             } else {
                 nd4j_printf("Either shape or NDArray should be defined in FlatResult variable\n","");
                 throw "Empty variable";
             }
+
+            nd4j_printf("       point A%i\n", 10);
 
             /*
             if (flatVariable->values() != nullptr && flatVariable->values()->Length() > 0) {
