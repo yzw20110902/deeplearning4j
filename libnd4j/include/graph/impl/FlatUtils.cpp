@@ -21,7 +21,7 @@ namespace nd4j {
         template<typename T>
         NDArray<T> *FlatUtils::fromFlatArray(const nd4j::graph::FlatArray *flatArray) {
             nd4j_printf("      Copy step: %i\n", 0);
-            auto rank = static_cast<int>(flatArray->shape()->size());
+            auto rank = static_cast<int>(flatArray->shape()->Get(0));
 
             nd4j_printf("      Copy step: %i; rank: %i\n", 1, rank);
 
