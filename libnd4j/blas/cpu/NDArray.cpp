@@ -277,11 +277,11 @@ template <typename T>
 
     template<typename T>
     std::vector<int64_t> NDArray<T>::getShapeInfoAsFlatVector() {
-        std::vector<int64_t > vector;
+        auto magicNumber = shape::shapeInfoLength(this->rankOf());
 
-        int magicNumber = shape::shapeInfoLength(this->rankOf());
+        std::vector<int64_t> vector(magicNumber);
         for (int e = 0; e < magicNumber; e++)
-            vector.push_back(this->_shapeInfo[e]);
+            vector[e] = static_cast<int64_t>(this->_shapeInfo[e]);
 
         return vector;
     }
@@ -289,11 +289,11 @@ template <typename T>
 ////////////////////////////////////////////////////////////////////////
     template<typename T>
     std::vector<Nd4jLong> NDArray<T>::getShapeInfoAsVector() {
-        std::vector<Nd4jLong> vector;
+        auto magicNumber = shape::shapeInfoLength(this->rankOf());
 
-        int magicNumber = shape::shapeInfoLength(this->rankOf());
+        std::vector<Nd4jLong> vector(magicNumber);
         for (int e = 0; e < magicNumber; e++)
-            vector.push_back(this->_shapeInfo[e]);
+            vector[e] = this->_shapeInfo[e];
 
         return vector;
     }
