@@ -20,8 +20,6 @@ namespace nd4j {
             bool isBe = BitwiseUtils::isBE();
             bool canKeep = (isBe && order == ByteOrder::BE) || (!isBe && order == ByteOrder::LE);
 
-            nd4j_printf("BE: %i; canKeep: %i;\n", (int) isBe, (int) canKeep);
-
             switch (dataType) {
                 case DataType_FLOAT: {
                         auto tmp = reinterpret_cast<float *>(src);

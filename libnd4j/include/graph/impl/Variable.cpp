@@ -181,12 +181,9 @@ namespace nd4j {
 
         template <typename T>
         nd4j::graph::Variable<T>::Variable(const nd4j::graph::FlatVariable *flatVariable) {
-            nd4j_printf("       point A%i\n", 0);
             auto vid = flatVariable->id();
             this->_id = vid->first();
             this->_index = vid->second();
-
-            nd4j_printf("       point A%i\n", 1);
 
             if (flatVariable->name() != nullptr && flatVariable->name()->size() != 0)
                 this->_name = flatVariable->name()->str();
@@ -194,79 +191,30 @@ namespace nd4j {
             _external = true;
             _readOnly = false;
 
-            T *buffer = nullptr;
-
             if (flatVariable->ndarray() != nullptr) {
-                 nd4j_printf("       point A%i\n", 2);
                  auto ar = flatVariable->ndarray();
 
-                 nd4j_printf("       point A%i\n", 21);
-
                 _ndarray = nd4j::graph::FlatUtils::fromFlatArray<T>(ar);
-
-                nd4j_printf("       point A%i\n", 22);
-
                 _ndarray->triggerAllocationFlag(true, true);
-
-                nd4j_printf("       point A%i\n", 3);
             } else if (flatVariable->shape() != nullptr) {
-                int shapeLen = flatVariable->shape()->Length();
-                //int *shape = new int[shapeLen];
-                nd4j_printf("       point A%i\n", 4);
+                auto shapeLen = flatVariable->shape()->size();
 
-                std::vector<Nd4jLong> shapeInfo(flatVariable->shape()->size());
-                for (int i = 0; i < flatVariable->shape()->size(); i++) {
+                std::vector<Nd4jLong> shapeInfo(shapeLen);
+                for (int i = 0; i < flatVariable->shape()->size(); i++)
                     shapeInfo[i] = flatVariable->shape()->Get(i);
-                }
-
-                nd4j_printf("       point A%i\n", 5);
 
                 // we just create empty array here
                 std::vector<Nd4jLong> shape(shapeInfo.at(0));
-                for (int i = 0; i < shapeInfo.at(0); i++) {
+                for (int i = 0; i < shapeInfo.at(0); i++)
                     shape[i] = shapeInfo.at(i + 1);
-                }
 
-                nd4j_printf("       point A%i\n", 6);
-
+                // we're using shape only here
                 _ndarray = new NDArray<T>((char) shapeInfo.at(shapeInfo.size() - 1), shape);
-
-                nd4j_printf("       point A%i\n", 7);
             } else {
                 nd4j_printf("Either shape or NDArray should be defined in FlatResult variable\n","");
-                throw "Empty variable";
+                throw std::runtime_error("Either shape or NDArray should be defined in FlatResult variable");
             }
 
-            nd4j_printf("       point A%i\n", 10);
-
-            /*
-            if (flatVariable->values() != nullptr && flatVariable->values()->Length() > 0) {
-                int bufLen = (int) flatVariable->values()->Length();
-                 buffer = new T[bufLen];
-
-#pragma omp parallel for simd
-                for (int e = 0; e < bufLen; e++) {
-                    buffer[e] = (T) flatVariable->values()->Get(e);
-                }
-            }
-
-            if (flatVariable->buffer() != nullptr && flatVariable->buffer()->size() > 0) {
-                auto dtype = DataTypeUtils::fromFlatDataType(flatVariable->dataType());
-                auto bo = ByteOrderUtils::fromFlatByteOrder(flatVariable->order());
-
-                auto bufLen = shape::length(shape);
-                buffer = new T[bufLen];
-
-                // TODO: byteorder should be honored here
-
-                // TODO: we want to have variable datatype, so in future we should replace explicit conversion with simple migration
-                auto flatBuf = (void *) flatVariable->buffer()->data();
-
-                DataTypeConversions<T>::convertType(buffer, flatBuf, dtype, bufLen);
-            }
-            */
-
-            //_ndarray = new NDArray<T>(buffer, shape);
             _variableType = VariableType::NDARRAY;
         }
 

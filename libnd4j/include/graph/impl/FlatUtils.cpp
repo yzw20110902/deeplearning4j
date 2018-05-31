@@ -2,6 +2,8 @@
 // Created by raver119 on 22.11.2017.
 //
 
+#include <stdexcept>
+#include <memory/Workspace.h>
 #include <graph/FlatUtils.h>
 #include <array/DataTypeConversions.h>
 #include <array/DataTypeUtils.h>
@@ -20,39 +22,29 @@ namespace nd4j {
 
         template<typename T>
         NDArray<T> *FlatUtils::fromFlatArray(const nd4j::graph::FlatArray *flatArray) {
-            nd4j_printf("      Copy step: %i\n", 0);
             auto rank = static_cast<int>(flatArray->shape()->Get(0));
 
-            assert(flatArray->shape()->size() == shape::shapeInfoLength(rank));
+            // we need to make sure flat
+            if (flatArray->shape()->size() != shape::shapeInfoLength(rank))
+                throw std::runtime_error("FlatArray shape length doesn't matches its own rank. Shape array is malformed.");
 
-            nd4j_printf("      Copy step: %i; rank: %i\n", 1, rank);
+            // TODO: we might want to allow real workspace here?
+            nd4j::memory::Workspace *ws = nullptr;
 
             auto length = shape::shapeInfoByteLength(rank);
-
-            nd4j_printf("      Copy step: %i; length: %i\n", 2, static_cast<int>(length));
-
-            auto newShape = new Nd4jLong[shape::shapeInfoLength(rank)];
-
-            nd4j_printf("      Copy step: %i\n", 3);
+            Nd4jLong *newShape = nullptr;
+            ALLOCATE(newShape, ws, shape::shapeInfoLength(rank), Nd4jLong);
 
             memcpy(newShape, flatArray->shape()->data(), length);
 
-            nd4j_printf("      Copy step: %i\n", 4);
-
             auto bLength = shape::length(newShape);
+            T *newBuffer = nullptr;
 
-            auto newBuffer = new T[bLength];
-
-            nd4j_printf("      Copy step: %i; bLength: %lld; FBsize: %i;\n", 5, bLength, flatArray->buffer()->size());
+            ALLOCATE(newBuffer, ws, bLength, T);
 
             DataTypeConversions<T>::convertType(newBuffer, (void *) flatArray->buffer()->data(), DataTypeUtils::fromFlatDataType(flatArray->dtype()), ByteOrderUtils::fromFlatByteOrder(flatArray->byteOrder()),  bLength);
 
-            nd4j_printf("      Copy step: %i\n", 6);
-
             auto array = new NDArray<T>(newBuffer, newShape);
-
-            nd4j_printf("      Copy step: %i\n", 7);
-
             array->triggerAllocationFlag(true, true);
 
             return array;
