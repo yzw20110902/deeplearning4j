@@ -26,30 +26,34 @@ namespace nd4j {
                 case DataType_FLOAT: {
                         auto tmp = reinterpret_cast<float *>(src);
 
-                        for (Nd4jLong e = 0; e < length; e++) {
-                            buffer[e] = canKeep ? static_cast<T>(tmp[e]) : BitwiseUtils::swap_bytes<T>(static_cast<T>(tmp[e]));
+                        if (std::is_same<T, float>::value) {
+                            memcpy(buffer, tmp, length * sizeof(T));
+                        } else {
+                            for (Nd4jLong e = 0; e < length; e++)
+                                buffer[e] = canKeep ? static_cast<T>(tmp[e]) : BitwiseUtils::swap_bytes<T>(static_cast<T>(tmp[e]));
                         }
                     }
                     break;
                 case DataType_DOUBLE: {
-                        nd4j_printf("Going double way: %lld\n", length)
                         auto tmp = reinterpret_cast<double *>(src);
 
-                        for (Nd4jLong e = 0; e < length; e++) {
-                            if (canKeep) {
-                                nd4j_printf("AHAHHAA: %i\n", (int) e);
-                                buffer[e] = static_cast<T>(tmp[e]);
-                            } else {
-                                //buffer[e] = BitwiseUtils::swap_bytes<T>(static_cast<T>(tmp[e]));
-                            }
+                        if (std::is_same<T, double>::value) {
+                            memcpy(buffer, tmp, length * sizeof(T));
+                        } else {
+                            for (Nd4jLong e = 0; e < length; e++)
+                                buffer[e] = canKeep ? static_cast<T>(tmp[e]) : BitwiseUtils::swap_bytes<T>(static_cast<T>(tmp[e]));
                         }
                     }
                     break;
                 case DataType_HALF: {
                         auto tmp = reinterpret_cast<float16 *>(src);
 
-                        for (Nd4jLong e = 0; e < length; e++)
-                            buffer[e] = canKeep ? static_cast<T>(tmp[e]) : BitwiseUtils::swap_bytes<T>(static_cast<T>(tmp[e]));
+                        if (std::is_same<T, float16>::value) {
+                            memcpy(buffer, tmp, length * sizeof(T));
+                        } else {
+                            for (Nd4jLong e = 0; e < length; e++)
+                                buffer[e] = canKeep ? static_cast<T>(tmp[e]) : BitwiseUtils::swap_bytes<T>(static_cast<T>(tmp[e]));
+                        }
                     }
                     break;
                 default: {
