@@ -26,7 +26,6 @@ namespace nd4j {
                 case DataType_FLOAT: {
                         auto tmp = reinterpret_cast<float *>(src);
 
-                        //#pragma omp parallel for simd schedule(guided)
                         for (Nd4jLong e = 0; e < length; e++) {
                             buffer[e] = canKeep ? static_cast<T>(tmp[e]) : BitwiseUtils::swap_bytes<T>(static_cast<T>(tmp[e]));
                         }
@@ -36,7 +35,6 @@ namespace nd4j {
                         nd4j_printf("Going double way: %lld\n", length)
                         auto tmp = reinterpret_cast<double *>(src);
 
-                        //#pragma omp parallel for simd schedule(guided)
                         for (Nd4jLong e = 0; e < length; e++) {
                             if (canKeep) {
                                 nd4j_printf("AHAHHAA: %i\n", (int) e);
@@ -50,7 +48,6 @@ namespace nd4j {
                 case DataType_HALF: {
                         auto tmp = reinterpret_cast<float16 *>(src);
 
-                        //#pragma omp parallel for simd schedule(guided)
                         for (Nd4jLong e = 0; e < length; e++)
                             buffer[e] = canKeep ? static_cast<T>(tmp[e]) : BitwiseUtils::swap_bytes<T>(static_cast<T>(tmp[e]));
                     }
