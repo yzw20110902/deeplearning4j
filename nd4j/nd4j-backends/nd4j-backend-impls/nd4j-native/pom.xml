@@ -142,10 +142,10 @@
                         <org.nd4j.linalg.tests.backendstorun>org.nd4j.linalg.cpu.nativecpu.CpuBackend</org.nd4j.linalg.tests.backendstorun>
                     </systemPropertyVariables>
                     <!--
-                        Maximum heap size was set to 8g, as a minimum required value for tests run.
+                        Maximum heap size was set to 10g, as a minimum required value for tests run.
                         Depending on a build machine, default value is not always enough.
                     -->
-                    <argLine>-Ddtype=float -Xmx8g</argLine>
+                    <argLine>-Ddtype=float -Xmx10g</argLine>
                 </configuration>
             </plugin>
             <plugin>
